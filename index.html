@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Md. Abdullah Al Emon | Portfolio</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      line-height: 1.6;
+      background: #0f172a;
+      color: #fff;
+      overflow: hidden;
+      /* Prevent body scroll - sections handle their own */
+      height: 100vh;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #38bdf8;
+      border-radius: 4px;
+    }
+
+    /* Navigation Bar */
+    nav {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(10px);
+      padding: 18px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+      height: 70px;
+    }
+
+    nav a {
+      color: #94a3b8;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      position: relative;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 5px;
+      left: 50%;
+      background: #38bdf8;
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    nav a:hover::after,
+    nav a.active::after {
+      width: 70%;
+    }
+
+    /* Main Container - Fixed position for SPA feel */
+    .main-container {
+      position: relative;
+      height: calc(100vh - 70px);
+      margin-top: 70px;
+      width: 100%;
+    }
+
+    /* Section Base Styles - All overlap in same space */
+    .page-section {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      /* Scroll if content is tall */
+      overflow-x: hidden;
+      padding: 40px 20px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(30px);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+
+    .page-section.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+      z-index: 10;
+    }
+
+    /* Home Section Special */
+    #home {
+      justify-content: center;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #home::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.3;
+      animation: backgroundMove 20s linear infinite;
+      top: 0;
+      left: 0;
+    }
+
+    @keyframes backgroundMove {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      100% {
+        transform: translate(-50px, -50px);
+      }
+    }
+
+    .home-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 800px;
+    }
+
+    .photo-container {
+      margin-bottom: 30px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .photo-container::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      background: linear-gradient(45deg, #38bdf8, #2563eb, #38bdf8);
+      border-radius: 50%;
+      z-index: -1;
+      animation: pulse 2s infinite;
+      opacity: 0.5;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+
+      50% {
+        transform: scale(1.05);
+        opacity: 0.3;
+      }
+    }
+
+    .profile-photo {
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #38bdf8;
+      box-shadow: 0 0 40px rgba(56, 189, 248, 0.4);
+      transition: transform 0.3s ease;
+    }
+
+    .profile-photo:hover {
+      transform: scale(1.05);
+    }
+
+    .home-content h1 {
+      font-size: 3.2rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #fff 0%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .home-content h2 {
+      font-size: 1.4rem;
+      font-weight: 400;
+      margin-bottom: 10px;
+      color: #94a3b8;
+    }
+
+    .home-content .university {
+      font-size: 1.1rem;
+      color: #64748b;
+      margin-bottom: 30px;
+    }
+
+    /* Button Group for Home Page */
+    .button-group {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cv-btn {
+      display: inline-block;
+      padding: 12px 30px;
+      background: transparent;
+      color: #38bdf8;
+      border: 2px solid #38bdf8;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .cv-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: #38bdf8;
+      transition: left 0.3s ease;
+      z-index: -1;
+    }
+
+    .cv-btn:hover {
+      color: #0f172a;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
+    }
+
+    .cv-btn:hover::before {
+      left: 0;
+    }
+
+    /* LinkedIn Button Styling */
+    .linkedin-btn {
+      border-color: #0077b5;
+      color: #0077b5;
+    }
+
+    .linkedin-btn::before {
+      background: #0077b5;
+    }
+
+    .linkedin-btn:hover {
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(0, 119, 181, 0.4);
+    }
+
+    /* Content Box for other pages */
+    .content-box {
+      max-width: 900px;
+      width: 100%;
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      margin: auto;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      margin-bottom: 30px;
+      color: #38bdf8;
+      position: relative;
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, #38bdf8, #2563eb);
+      bottom: 0;
+      left: 0;
+      border-radius: 2px;
+    }
+
+    /* About */
+    .about-text {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #cbd5e1;
+      text-align: justify;
+    }
+
+    /* Education */
+    .edu-grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .edu-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 12px;
+      padding: 25px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .edu-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: #38bdf8;
+    }
+
+    .edu-card:hover {
+      transform: translateX(5px);
+      border-color: #38bdf8;
+      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2);
+    }
+
+    .edu-card h3 {
+      color: #fff;
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+    }
+
+    .edu-card p {
+      color: #94a3b8;
+      margin-bottom: 5px;
+      font-size: 0.95rem;
+    }
+
+    .edu-card strong {
+      color: #38bdf8;
+    }
+
+    .gpa {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.1);
+      color: #38bdf8;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-weight: 600;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    /* Skills */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .skill-category {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 12px;
+      padding: 25px;
+    }
+
+    .skill-category h3 {
+      color: #38bdf8;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+      padding-bottom: 10px;
+    }
+
+    .skill-list {
+      list-style: none;
+    }
+
+    .skill-list li {
+      padding: 8px 0;
+      color: #cbd5e1;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .skill-list li:hover {
+      color: #38bdf8;
+      padding-left: 10px;
+    }
+
+    .skill-list li::before {
+      content: '▹';
+      color: #38bdf8;
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    /* Projects & Achievements */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .info-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 15px;
+      padding: 35px 25px;
+      text-align: center;
+      transition: all 0.4s ease;
+    }
+
+    .info-card:hover {
+      transform: translateY(-5px);
+      border-color: #38bdf8;
+      box-shadow: 0 15px 35px rgba(65, 169, 214, 0.2);
+    }
+
+    .card-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+
+    #achievements .info-card .card-meta a {
+    color: #38bdf8 !important;
+}
+
+    .info-card h3 {
+      color: #fff;
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+    }
+
+    .info-card p {
+      color: #94a3b8;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .card-meta {
+      background: rgba(87, 169, 204, 0.1);
+      padding: 10px;
+      border-radius: 8px;
+      color: #38bdf8;
+      font-size: 0.85rem;
+      border: 1px solid rgba(78, 167, 205, 0.2);
+       
+    }
+
+    /* Contact */
+    .contact-list {
+      text-align: left;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .contact-item {
+      margin: 20px 0;
+      font-size: 1.1rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 10px;
+      border: 1px solid rgba(56, 189, 248, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .contact-item:hover {
+      border-color: #38bdf8;
+      transform: translateX(5px);
+    }
+
+    .contact-item a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+
+    .contact-item a:hover {
+      text-decoration: underline;
+    }
+
+    /* Footer */
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: rgba(15, 23, 42, 0.98);
+      color: #64748b;
+      text-align: center;
+      padding: 12px;
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(56, 189, 248, 0.1);
+      z-index: 100;
+      height: 45px;
+    }
+
+    footer a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media(max-width: 768px) {
+      nav {
+        gap: 8px;
+        padding: 15px 5px;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-left: 10px;
+      }
+
+      nav a {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+      }
+
+      .profile-photo {
+        width: 180px;
+        height: 180px;
+      }
+
+      .home-content h1 {
+        font-size: 2.2rem;
+      }
+
+      .home-content h2 {
+        font-size: 1.1rem;
+      }
+
+      .content-box {
+        padding: 25px 20px;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .skills-grid,
+      .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .edu-card:hover {
+        transform: translateX(3px);
+      }
+
+      .button-group {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a onclick="showSection('home')" class="nav-link active" id="nav-home">Home</a>
+    <a onclick="showSection('about')" class="nav-link" id="nav-about">About Me</a>
+    <a onclick="showSection('education')" class="nav-link" id="nav-education">Education</a>
+    <a onclick="showSection('skills')" class="nav-link" id="nav-skills">Skills</a>
+    <a onclick="showSection('projects')" class="nav-link" id="nav-projects">Projects</a>
+    <a onclick="showSection('achievements')" class="nav-link" id="nav-achievements">Achievements</a>
+    <a onclick="showSection('contact')" class="nav-link" id="nav-contact">Contact</a>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="main-container">
+
+    <!-- Home Section -->
+    <section id="home" class="page-section active">
+      <div class="home-content">
+        <div class="photo-container">
+          <img src="photo.png" alt="Md. Abdullah Al Emon" class="profile-photo"
+            onerror="this.src='https://via.placeholder.com/250'">
+        </div>
+        <h1>Md. Abdullah Al Emon</h1>
+        <h2>BSc in Computer Science & Engineering</h2>
+        <p class="university">International University of Business Agriculture and Technology</p>
+
+        <div class="button-group">
+
+          <a href="CV Abdullah AL Emon latest.pdf" download="Abduallah Al Emon.pdf" class="cv-btn">
+            📄 Download CV
+          </a>
+
+
+
+          <a href="https://www.linkedin.com/in/abdullah-al-emon-233a01351/" target="_blank"
+            class="cv-btn linkedin-btn">💼 LinkedIn</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="page-section">
+      <div class="content-box">
+        <h2>About Me</h2>
+        <p class="about-text">
+          I am Abdullah Al Emon, a Computer Science and Engineering (CSE) undergraduate at the
+          International University of Business Agriculture and Technology (IUBAT).
+          I am passionate about technology and focused on developing strong technical
+          skills to build reliable and impactful solutions. I value innovation, collaboration,
+          and continuous learning, and I enjoy solving complex problems in dynamic, team-oriented
+          environments with a performance-driven mindset.
+        </p>
+      </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="page-section">
+      <div class="content-box">
+        <h2>Education</h2>
+        <div class="edu-grid">
+          <div class="edu-card">
+            <h3>BSc in Computer Science & Engineering</h3>
+            <p><strong>Institute:</strong> IUBAT</p>
+            <p><strong>Year:</strong> 2024 – Present</p>
+            <span class="gpa">CGPA: 3.80 / 4.00</span>
+          </div>
+
+          <div class="edu-card">
+            <h3>HSC - Science</h3>
+            <p><strong>Institute:</strong> Bangladesh Navy College Dhaka</p>
+            <p><strong>Board:</strong> Dhaka | <strong>Year:</strong> 2021</p>
+            <span class="gpa">GPA: 5.00 / 5.00</span>
+          </div>
+
+          <div class="edu-card">
+            <h3>SSC - Science</h3>
+            <p><strong>Institute:</strong> Kaunia Emdadia Secondary School</p>
+            <p><strong>Board:</strong> Barisal | <strong>Year:</strong> 2019</p>
+            <span class="gpa">GPA: 5.00 / 5.00</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="page-section">
+      <div class="content-box">
+        <h2>Skills</h2>
+        <div class="skills-grid">
+          <div class="skill-category">
+            <h3>Technical Skills</h3>
+            <ul class="skill-list">
+              <li>C and C++ Programming</li>
+              <li>Data Structures and Algorithms</li>
+              <li>Database Management</li>
+              <li>Python Programming</li>
+              <li>Microsoft Word & Excel and SQL</li>
+              <li>Real-life Problem Solving</li>
+            </ul>
+          </div>
+
+          <div class="skill-category">
+            <h3>Soft Skills</h3>
+            <ul class="skill-list">
+              <li>Leadership</li>
+              <li>Team Management</li>
+              <li>Planning & Organizing</li>
+              <li>Positive Thinking</li>
+              <li>Hard Working & Dynamic</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="page-section">
+      <div class="content-box">
+        <h2>Projects</h2>
+
+        <div class="info-card">
+
+          <div class="card-icon">👥</div>
+
+          <h3>HR Management System</h3>
+
+          <p>A user-friendly HR Management System designed to efficiently manage employee records, attendance, and
+            essential HR operations.</p>
+
+          <a href="HR management System.zip" download class="card-meta">
+            Download Project
+          </a>
+        </div>
+
+        <div class="info-card">
+          <div class="card-icon">🚗</div>
+          <h3>Car parking Managemet System</h3>
+          <p>A smart parking solution for efficient vehicle tracking, slot management, and parking operations.</p>
+          <a href="Car parking Managemet System.zip" download class="card-meta">
+            Download Project
+          </a>
+        </div>
+      </div>
+  
+  </section>
+
+  
+  <!-- Achievements Section -->
+
+  <section id="achievements" class="page-section">
+    <div class="content-box">
+      <h2>Achievements</h2>
+
+      <div class="achievement-list">
+
+        <div class="info-card">
+          <div class="card-icon">🏆</div>
+          <h3>Python Django 101 Certificate</h3>
+          <p>Successfully completed the Python Django 101 course
+            from Simplilearn SkillUp on 4 October 2026.</p>
+
+          <div class="card-meta">
+            <a href="1791131868371.pdf" download>
+              Download Certificate
+            </a>
+          </div>
+
+        </div>
+
+        <div class="info-card">
+          <div class="card-icon">🏆</div>
+          <h3>CS105: Introduction to Python </h3>
+          <p>Successfully completed the CS105: Introduction to Python course from Saylor Academy, gaining foundational
+            knowledge of Python programming and its core concepts.</p>
+
+          <div class="card-meta">
+            <a href="7956906717AA.pdf" download>
+              Download Certificate
+            </a>
+          </div>
+        
+        </div>
+
+      </div>
+    </div>
+  </section>
+  ```
+
+  <!-- Contact Section -->
+  <section id="contact" class="page-section">
+    <div class="content-box">
+      <h2>Contact</h2>
+      <div class="contact-list">
+        <div class="contact-item">
+          <span>📧</span>
+          <span><a href="mailto:emon24103076@gmail.com">emon24103076@gmail.com</a></span>
+        </div>
+
+        <div class="contact-item">
+          <span>📞</span>
+          <span>+88 01642035924</span>
+        </div>
+
+        <div class="contact-item">
+          <span>📍</span>
+          <span>House No.47, Road No.20, Nikunjo-2, Dhaka-1229</span>
+        </div>
+
+        <div class="contact-item">
+          <span>🏠</span>
+          <span>Permanent: Kaunia, Betagi, Barguna</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </div>
+
+  <footer>
+    <p>© 2026 Md. Abdullah Al Emon | <a href="CV.pdf" download>Download CV</a></p>
+  </footer>
+
+  <script>
+    function showSection(sectionId) {
+      // Hide all sections
+      const sections = document.querySelectorAll('.page-section');
+      sections.forEach(section => {
+        section.classList.remove('active');
+      });
+
+      // Remove active class from all nav links
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+      });
+
+      // Show selected section
+      document.getElementById(sectionId).classList.add('active');
+
+      // Update nav active state
+      document.getElementById('nav-' + sectionId).classList.add('active');
+    }
+  </script>
+
+</body>
+
+</html>
